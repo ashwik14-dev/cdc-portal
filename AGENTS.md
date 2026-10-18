@@ -8,6 +8,15 @@ A MERN (MongoDB, Express, React, Node) authentication + role-based dashboard app
 **IARE Career Development Centre (CDC)** — built for an interview assignment. Three roles:
 **Admin**, **Faculty**, **Student**.
 
+**Live deployment (Part B):**
+- Website: `https://cdc-portal-1.onrender.com` (Render Static Site, root `client/`)
+- API: `https://cdc-portal-l07u.onrender.com` (Render Web Service, root `server/`)
+- DB: MongoDB Atlas `Cluster0` (`cdc_portal` db); Atlas IP allowlist is `0.0.0.0/0`
+- Static site has a SPA rewrite (`/*` → `/index.html`) so `/verify/:qrId` deep links work
+- Render env vars of note: API has `CLIENT_URL=https://cdc-portal-1.onrender.com`,
+  `COOKIE_SECURE=true`, `COOKIE_SAME_SITE=none`; static site has
+  `VITE_API_URL=https://cdc-portal-l07u.onrender.com/api`
+
 There are **TWO front ends** that must both be kept in sync:
 
 1. **React app** (`client/`) — the real app. Uses the Node API + MongoDB. This is what

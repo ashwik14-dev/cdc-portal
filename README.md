@@ -10,6 +10,23 @@ Only the Admin can create Faculty and Student accounts. Each student receives a 
 
 ---
 
+## Live Demo
+
+**https://cdc-portal-1.onrender.com**
+
+Log in with any account below — no setup required:
+
+| Role    | Email               | Password   |
+| ------- | ------------------- | ---------- |
+| Admin   | `admin@cdc.ac.in`   | `Admin@123` |
+| Faculty | `priya@cdc.ac.in`   | `Fac@123`   |
+| Student | `rahul@cdc.ac.in`   | `Stu@123`   |
+
+To scan a student QR: log in as the student, open the **QR Code** tab, and scan the code with a
+phone camera — it opens a public verification page (no login needed).
+
+---
+
 ## Tech Stack
 
 | Layer      | Technology                                             |
@@ -316,8 +333,6 @@ locally before submission.
 
 ## Known Limitations
 
-- **Not hosted by default:** the app runs locally; see [Deployment](#deployment-optional) to put it
-  online so a reviewer can open a URL and log in without running anything.
 - No password reset / change-password flow (out of scope for this assignment).
 - QR scanning opens a **verification page only** — attendance recording is intentionally out of scope.
 - Tokens last 1 day; refresh-token rotation is not implemented.
