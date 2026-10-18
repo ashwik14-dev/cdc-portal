@@ -31,11 +31,10 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1200));
     try {
       const data = await login(email, password, { defer: true });
       setGreeting(data.user);
-      await new Promise((r) => setTimeout(r, 1600));
+      await new Promise((r) => setTimeout(r, 900));
       completeLogin(data.user);
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
