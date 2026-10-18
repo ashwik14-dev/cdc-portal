@@ -491,14 +491,9 @@
               </div>
               <div class="stats">
                 <div class="stat"><span class="k">Attendance</span><div class="v"><span>92<span style="font-size:10px;color:#6b7280">%</span></span><span style="background:rgba(34,197,94,.2);color:#4ade80;padding:2px;border-radius:4px">&#10003;</span></div></div>
-                <div class="stat"><span class="k">Rank</span><div class="v"><span>#05</span><span style="background:rgba(245,158,11,.2);color:#fbbf24;padding:2px;border-radius:4px">&#9733;</span></div></div>
+                <div class="stat"><span class="k">Biometric</span><div class="v"><span>On</span><span style="background:rgba(34,211,238,.2);color:#67e8f9;padding:2px;border-radius:4px">&#9679;</span></div></div>
               </div>
-              <div class="panel">
-                <div class="lb-h"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path d="M6 9H4.5a1 1 0 0 1 0-5H6M18 9h1.5a1 1 0 0 0 0-5H18M4 22h16M10 14.66v1.63a2 2 0 0 1-.98 1.69A5 5 0 0 0 7 21.98M14 14.66v1.63a2 2 0 0 0 .98 1.69A5 5 0 0 1 17 21.98M18 9H6V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1z"/></svg>Leaderboard</div>
-                <div class="lb-row"><div class="lb-n" style="background:#fbbf24;color:#000">1</div><div class="lb-bar"><div class="lb-fill" style="width:92%;background:#fbbf24"></div></div><span class="lb-pts" style="color:#fbbf24">2040</span></div>
-                <div class="lb-row"><div class="lb-n" style="background:#9ca3af;color:#000">2</div><div class="lb-bar"><div class="lb-fill" style="width:85%;background:#9ca3af"></div></div><span class="lb-pts" style="color:#9ca3af">1850</span></div>
-                <div class="lb-row" style="margin-bottom:0"><div class="lb-n" style="background:#c2410c;color:#fff">3</div><div class="lb-bar"><div class="lb-fill" style="width:78%;background:#c2410c"></div></div><span class="lb-pts" style="color:#c2410c">1620</span></div>
-              </div>
+              <div class="stat" style="grid-column:1/-1"><span class="k">Branch</span><div class="v"><span id="phoneBranch" style="font-size:0.95rem">CSE</span><span style="background:rgba(99,102,241,.2);color:#a5b4fc;padding:2px;border-radius:4px">&#9733;</span></div></div>
               <div class="sess"><div class="ic"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19h8M4 17l6-6-6-6"/></svg></div><div><div class="t">CDC Portal</div><div class="s">Active &bull; Secure Login</div></div></div>
             </div>
           </div>
@@ -886,18 +881,42 @@ document.getElementById("pwToggle").addEventListener("click",function(){
   p.type = p.type==="password" ? "text" : "password";
 });
 
+function firstNameOf(v){
+  var local=String(v||"").split("@")[0];
+  var first=local.split(/[._\-+\s]/)[0];
+  if(!first) return "";
+  return first.charAt(0).toUpperCase()+first.slice(1);
+}
+
+var phoneHi=document.getElementById("phoneHi");
+var phoneSub=document.getElementById("phoneSub");
+var phoneBranch=document.getElementById("phoneBranch");
+var phoneRole="student";
+
+document.getElementById("email").addEventListener("input",function(){
+  if(phoneRole!=="student") return;
+  var fn=firstNameOf(this.value);
+  phoneHi.textContent = fn ? "Hello "+fn : PHONE_ROLE.student.h;
+});
+
 document.querySelectorAll(".role-chip").forEach(function(chip){
   chip.addEventListener("click",function(){
     var role=chip.getAttribute("data-role");
     var u=users.filter(function(x){return x.role===role;})[0];
     if(!u) return;
+    phoneRole=role;
     document.getElementById("email").value=u.email;
     document.getElementById("password").value=u.password;
     loginAlert.innerHTML="";
     var ph=PHONE_ROLE[role];
     if(ph){
-      document.getElementById("phoneHi").textContent=ph.h;
-      document.getElementById("phoneSub").textContent=ph.s;
+      phoneHi.textContent=ph.h;
+      phoneSub.textContent=ph.s;
+    }
+    if(role==="student"){
+      var fn=firstNameOf(u.email);
+      if(fn) phoneHi.textContent="Hello "+fn;
+      if(phoneBranch) phoneBranch.textContent=u.branch||"\u2014";
     }
   });
 });
@@ -913,13 +932,19 @@ loginForm.addEventListener("submit",function(e){
   var pw=document.getElementById("password").value;
   loginBtn.disabled=true; loginBtn.innerHTML='<span class="spin"></span> Signing in…';
   setTimeout(function(){
-    loginBtn.disabled=false; loginBtn.textContent="Sign In";
     var u=users.filter(function(x){return x.email===em && x.password===pw;})[0];
-    if(!u){ showLoginAlert("Invalid email or password.",false); return; }
+    if(!u){ loginBtn.disabled=false; loginBtn.textContent="Sign In"; showLoginAlert("Invalid email or password.",false); return; }
     currentUser=u;
     localStorage.setItem(SESSION_KEY, JSON.stringify({id:u.id}));
-    showLoginAlert("Welcome back, "+u.name+"!",true);
-    enterApp();
+    var fn=u.name.split(" ")[0];
+    phoneHi.textContent="Hello "+fn;
+    if(u.branch && phoneBranch) phoneBranch.textContent=u.branch;
+    showLoginAlert("Welcome, "+fn+"! Opening your dashboard…",true);
+    loginBtn.innerHTML='<span class="spin"></span> Opening…';
+    setTimeout(function(){
+      loginBtn.disabled=false; loginBtn.textContent="Sign In";
+      enterApp();
+    },1600);
   },450);
 });
 

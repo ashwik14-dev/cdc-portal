@@ -1,6 +1,6 @@
-import { QrCode, ScanLine, User, Trophy, CircleCheckBig, Terminal, Wifi, Signal } from "lucide-react";
+import { QrCode, ScanLine, User, CircleCheckBig, Terminal, Wifi, Signal, Fingerprint, Building2 } from "lucide-react";
 
-export default function PhoneMockup({ name = "Student", dept = "CSE (AI & ML) - Sem 6" }) {
+export default function PhoneMockup({ name = "Student", dept = "CSE (AI & ML) - Sem 6", branch = "CSE" }) {
   return (
     <div
       className="relative w-full max-w-[260px] h-[50vh] max-h-[580px] min-h-[380px] animate-float"
@@ -62,44 +62,24 @@ export default function PhoneMockup({ name = "Student", dept = "CSE (AI & ML) - 
                     </div>
                   </div>
                   <div className="bg-[#1a1f2e]/80 p-2 rounded-xl border border-white/5 backdrop-blur-md flex flex-col justify-between h-16">
-                    <span className="text-gray-400 text-[8px] uppercase font-bold tracking-wider">Rank</span>
+                    <span className="text-gray-400 text-[8px] uppercase font-bold tracking-wider">Biometric</span>
                     <div className="flex justify-between items-end">
-                      <div className="text-lg font-bold text-white leading-none">#05</div>
-                      <div className="bg-amber-500/20 text-amber-400 p-0.5 rounded">
-                        <Trophy className="w-2.5 h-2.5" />
+                      <div className="text-lg font-bold text-white leading-none">On</div>
+                      <div className="bg-cyan-500/20 text-cyan-400 p-0.5 rounded">
+                        <Fingerprint className="w-2.5 h-2.5" />
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/5 rounded-xl p-3 backdrop-blur-sm flex-1 flex flex-col justify-center mt-2 min-h-[100px]">
-                  <div className="flex items-center gap-1 mb-2">
-                    <Trophy className="w-3 h-3 text-amber-400" />
-                    <span className="text-gray-300 font-bold text-[10px] uppercase">Leaderboard</span>
+                <div className="bg-[#1a1f2e]/80 p-2 rounded-xl border border-white/5 backdrop-blur-md flex items-center justify-between mt-2 h-12">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-indigo-500/20 text-indigo-400 p-1 rounded">
+                      <Building2 className="w-3 h-3" />
+                    </div>
+                    <span className="text-gray-400 text-[8px] uppercase font-bold tracking-wider">Branch</span>
                   </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-amber-400 rounded-full flex items-center justify-center text-[8px] font-bold text-black shadow-lg">1</div>
-                      <div className="flex-1 h-1 bg-gray-700/50 rounded-full overflow-hidden">
-                        <div className="h-full bg-amber-400 w-[92%]" />
-                      </div>
-                      <span className="text-[8px] font-mono text-amber-400">2040</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-gray-400 rounded-full flex items-center justify-center text-[8px] font-bold text-black">2</div>
-                      <div className="flex-1 h-1 bg-gray-700/50 rounded-full overflow-hidden">
-                        <div className="h-full bg-gray-400 w-[85%]" />
-                      </div>
-                      <span className="text-[8px] font-mono text-gray-400">1850</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-orange-700 rounded-full flex items-center justify-center text-[8px] font-bold text-white">3</div>
-                      <div className="flex-1 h-1 bg-gray-700/50 rounded-full overflow-hidden">
-                        <div className="h-full bg-orange-700 w-[78%]" />
-                      </div>
-                      <span className="text-[8px] font-mono text-orange-700">1620</span>
-                    </div>
-                  </div>
+                  <span className="text-white text-xs font-bold truncate max-w-[110px] text-right">{branch}</span>
                 </div>
 
                 <div className="mt-2 bg-[#1a1f2e]/60 rounded-xl p-2 border border-white/5 flex items-center gap-2 backdrop-blur-md">

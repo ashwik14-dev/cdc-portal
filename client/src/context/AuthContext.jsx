@@ -23,12 +23,14 @@ export function AuthProvider({ children }) {
       .finally(() => setLoading(false));
   }, []);
 
-  const login = useCallback(async (email, password) => {
+  const login = useCallback(async (email, password, opts = {}) => {
     const data = await authApi.login(email, password);
     localStorage.setItem("cdc_token", data.token);
-    setUser(data.user);
+    if (!opts.defer) setUser(data.user);
     return data;
   }, []);
+
+  const completeLogin = useCallback((user) => setUser(user), []);
 
   const updateUser = useCallback((patch) => {
     setUser((prev) => (prev ? { ...prev, ...patch } : prev));

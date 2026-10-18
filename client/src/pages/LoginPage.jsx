@@ -1,26 +1,46 @@
-﻿import { useState } from "react";
-import { Mail, Lock, Eye, EyeOff, AlertCircle, Loader2, ShieldCheck, BookUser, GraduationCap, Briefcase, Handshake } from "lucide-react";
+﻿import { useState, useEffect } from "react";
+import { Mail, Lock, Eye, EyeOff, AlertCircle, Loader2, ShieldCheck, BookUser, GraduationCap, Briefcase, Handshake, CircleCheckBig } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import FormInput from "../components/FormInput";
 import PhoneMockup from "../components/PhoneMockup";
 import PublicNav from "../components/PublicNav";
 
+function firstNameOf(value) {
+  const local = (value || "").split("@")[0];
+  const first = local.split(/[._\-+\s]/)[0];
+  if (!first) return "";
+  return first.charAt(0).toUpperCase() + first.slice(1);
+}
+
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, completeLogin } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [role, setRole] = useState("admin");
+  const [previewName, setPreviewName] = useState("");
+  const [greeting, setGreeting] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    setPreviewName(firstNameOf(email));
+  }, [email]);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
+    setSubmitting(true);
     await new Promise((r) => setTimeout(r, 1200));
     try {
-      await login(email, password);
+      const data = await login(email, password, { defer: true });
+      setGreeting(data.user);
+      await new Promise((r) => setTimeout(r, 1600));
+      completeLogin(data.user);
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -53,7 +73,7 @@ export default function LoginPage() {
             </div>
 
             {/* Career flow: briefcase → student → handshake */}
-            {role !== "student" && (
+            {role !== "student" && !greeting && (
             <div className="flex items-center justify-center mt-12 mb-10 animate-fade-in-up select-none" aria-hidden="true">
               <div className="relative flex h-24 w-24 items-center justify-center rounded-full border-2 border-white/60 bg-white/15 backdrop-blur-sm shadow-[0_0_35px_rgba(255,255,255,0.5)] animate-pulse-glow">
                 <span className="absolute inset-0 rounded-full bg-white/20 blur-xl" />
@@ -72,7 +92,17 @@ export default function LoginPage() {
             </div>
             )}
 
-            {role === "student" && <PhoneMockup name="Student" dept="CSE (AI & ML) - Sem 6" />}
+            {(role === "student" || greeting) && (
+              <PhoneMockup
+                name={greeting ? greeting.name?.split(" ")[0] : previewName || "Student"}
+                dept={
+                  greeting
+                    ? `${greeting.branch || (greeting.role ? greeting.role.charAt(0).toUpperCase() + greeting.role.slice(1) : "User")} \u2022 CDC Portal`
+                    : "CSE (AI & ML) - Sem 6"
+                }
+                branch={greeting ? greeting.branch || "\u2014" : "CSE"}
+              />
+            )}
           </div>
         </div>
 
@@ -130,7 +160,16 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {error && (
+              {greeting && (
+                <div className="mb-4 flex items-start gap-2 bg-green-50 dark:bg-green-500/10 border-2 border-green-200 dark:border-green-500/25 text-green-700 dark:text-green-400 rounded-2xl px-4 py-3 text-xs font-semibold animate-fade-in-up">
+                  <CircleCheckBig className="w-4 h-4 shrink-0 mt-px" />
+                  <span>
+                    Welcome, {greeting.name?.split(" ")[0]}! Opening your dashboard&hellip;
+                  </span>
+                </div>
+              )}
+
+              {!greeting && error && (
                 <div className="mb-4 flex items-start gap-2 bg-red-50 dark:bg-red-500/10 border-2 border-red-100 dark:border-red-500/25 text-red-600 dark:text-red-400 rounded-2xl px-4 py-3 text-xs font-semibold animate-fade-in-up">
                   <AlertCircle className="w-4 h-4 shrink-0 mt-px" />
                   <span>{error}</span>
@@ -190,9 +229,11 @@ export default function LoginPage() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-full py-3 shadow-lg shadow-blue-900/30 transition-all flex items-center justify-center gap-2 cursor-pointer mt-4"
+                  disabled={submitting || !!greeting}
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-full py-3 shadow-lg shadow-blue-900/30 transition-all flex items-center justify-center gap-2 cursor-pointer mt-4 disabled:opacity-70 disabled:cursor-wait"
                 >
-                  Sign In
+                  {submitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  {submitting ? "Signing In" : greeting ? "Opening Dashboard" : "Sign In"}
                 </button>
               </form>
             </div>
