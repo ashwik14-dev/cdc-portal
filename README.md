@@ -79,6 +79,13 @@ npm run dev         # UI on http://localhost:5173
 Then open **http://localhost:5173** and log in with the printed credentials
 (`admin@cdc.ac.in` / `Admin@123` by default — see [Demo Credentials](#demo-credentials)).
 
+### Even easier on Windows
+
+Install **Node.js** and **MongoDB Community Server** once, download this project, then **double-click
+`START.bat`**. It creates `server/.env`, installs the packages, creates the accounts, starts both
+apps and opens the browser — nothing else to type. If Node.js is missing or MongoDB is not running it
+stops and tells you exactly what to install.
+
 ### 1. Prerequisites
 
 - Node.js 18+

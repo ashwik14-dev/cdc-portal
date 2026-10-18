@@ -23,6 +23,10 @@ There are **TWO front ends** that must both be kept in sync:
 
 MongoDB runs as a Windows service named `MongoDB` (should already be started).
 
+**For a human on a fresh clone:** double-click `START.bat` — it checks Node.js, creates
+`server/.env` from the example, runs `npm install` for both apps, seeds any missing accounts and
+opens the browser. It stops early with instructions if Node.js is missing or MongoDB is unreachable.
+
 ```powershell
 # API  (from server\)  -> http://localhost:5000
 node src/server.js
@@ -55,7 +59,7 @@ npm.cmd run dev -- --host
 D:\CDC INTERVIEW\cdc-portal\
   index.html              standalone localStorage demo (all standalone edits go here)
   README.md               project docs
-  START.bat               convenience launcher
+  START.bat               self-configuring launcher (installs, creates .env, seeds, then runs)
   server\
     src\
       app.js              express app + route mounting

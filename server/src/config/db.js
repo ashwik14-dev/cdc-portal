@@ -7,10 +7,13 @@ export async function connectDB() {
     process.exit(1);
   }
   try {
-    await mongoose.connect(uri);
+    await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: Number(process.env.DB_CONNECT_TIMEOUT_MS) || 8000,
+    });
     console.log("MongoDB connected:", mongoose.connection.name);
   } catch (err) {
     console.error("MongoDB connection error:", err.message);
+    console.error("Check that MongoDB is running and that MONGO_URI in server/.env is correct.");
     process.exit(1);
   }
 }
