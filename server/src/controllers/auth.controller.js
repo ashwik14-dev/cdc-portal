@@ -8,14 +8,20 @@ function signToken(user) {
   });
 }
 
+function cookieOptions() {
+  return {
+    httpOnly: true,
+    secure: process.env.COOKIE_SECURE === "true",
+    sameSite: process.env.COOKIE_SAME_SITE || "lax",
+  };
+}
+
 function sendTokenResponse(res, user, statusCode, message) {
   const token = signToken(user);
   res
     .status(statusCode)
     .cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.COOKIE_SECURE === "true",
-      sameSite: "lax",
+      ...cookieOptions(),
       maxAge: 24 * 60 * 60 * 1000,
     })
     .json({
@@ -61,7 +67,7 @@ export async function login(req, res, next) {
 
 export async function logout(req, res) {
   res
-    .clearCookie("token", { httpOnly: true, secure: process.env.COOKIE_SECURE === "true", sameSite: "lax" })
+    .clearCookie("token", cookieOptions())
     .json({ success: true, message: "Logged out successfully." });
 }
 

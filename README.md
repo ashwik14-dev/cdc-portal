@@ -137,8 +137,15 @@ To scan it with a **phone**, the phone must be able to reach the dev server over
 | `MONGO_URI`      | MongoDB connection string                    | `mongodb://127.0.0.1:27017/cdc_portal`    |
 | `JWT_SECRET`     | Secret used to sign JWTs (keep private)      | `long_random_string`                      |
 | `JWT_EXPIRES_IN` | Token lifetime                               | `1d`                                      |
-| `CLIENT_URL`     | Frontend origin allowed by CORS              | `http://localhost:5173`                   |
+| `CLIENT_URL`     | Frontend origin(s) allowed by CORS (comma-separated) | `http://localhost:5173`            |
 | `COOKIE_SECURE`  | Set `true` in production (HTTPS)             | `false`                                   |
+| `COOKIE_SAME_SITE` | `none` + `COOKIE_SECURE=true` when frontend and API are on different sites | `lax`        |
+| `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | Admin created by `npm run seed` | `admin@cdc.ac.in` / `Admin@123` |
+| `SEED_DEMO_ACCOUNTS` | Also seed the demo faculty/student   | `true`                                    |
+
+> Localhost, `127.0.0.1` and private LAN origins (`192.168.x.x`, `10.x.x.x`, `172.16-31.x.x`) are
+> always accepted, so phones on the same Wi-Fi work without extra CORS configuration. Public
+> origins must be listed in `CLIENT_URL`.
 
 > `.env` is git-ignored. Only `.env.example` is committed.
 
@@ -158,6 +165,53 @@ with `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` in `server/.env` before seeding.
 every account it creates and **never overwrites an existing user**. By default it also seeds the
 demo faculty and student accounts listed under [Demo Credentials](#demo-credentials) so the whole
 flow can be exercised immediately; set `SEED_DEMO_ACCOUNTS=false` to seed only the admin.
+
+---
+
+## Deployment (optional)
+
+The app is not hosted, but it deploys free with **MongoDB Atlas** (database), **Render** (API) and
+**Vercel** (React client). Once deployed, anyone — including a reviewer in another state — can open
+the URL and log in; nothing depends on your computer being on.
+
+### 1. Database — MongoDB Atlas
+
+1. Create a free M0 cluster and a database user.
+2. Network Access → allow `0.0.0.0/0` (or Render's IPs).
+3. Copy the connection string: `mongodb+srv://<user>:<pass>@<cluster>.mongodb.net/cdc_portal`.
+
+### 2. API — Render
+
+- New → **Web Service** → connect this repository.
+- **Root Directory:** `server` · **Build Command:** `npm install` · **Start Command:** `npm start`
+- Environment variables:
+
+  | Key | Value |
+  | --- | ----- |
+  | `MONGO_URI` | the Atlas connection string |
+  | `JWT_SECRET` | a long random string |
+  | `JWT_EXPIRES_IN` | `1d` |
+  | `CLIENT_URL` | your Vercel URL, e.g. `https://cdc-portal.vercel.app` |
+  | `COOKIE_SECURE` | `true` |
+  | `COOKIE_SAME_SITE` | `none` |
+  | `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | the admin you want |
+
+- After the first deploy, open Render's **Shell** and run `npm run seed` once to create the admin
+  (and demo accounts). The command prints the credentials.
+
+### 3. Client — Vercel
+
+- New Project → import this repository.
+- **Root Directory:** `client` · Framework preset **Vite** (build `npm run build`, output `dist`).
+- Environment variables:
+
+  | Key | Value |
+  | --- | ----- |
+  | `VITE_API_URL` | `https://<your-render-service>.onrender.com/api` |
+  | `VITE_PUBLIC_ORIGIN` | `https://<your-vercel-app>.vercel.app` |
+
+- Redeploy after adding `VITE_PUBLIC_ORIGIN`, and make sure Render's `CLIENT_URL` matches the final
+  Vercel URL so CORS allows the login request.
 
 ---
 
@@ -239,8 +293,8 @@ locally before submission.
 
 ## Known Limitations
 
-- **Not deployed:** there is no hosted URL — the app runs locally (or deploy the client to
-  Vercel/Netlify, the API to Render/Railway, and point `MONGO_URI` at MongoDB Atlas).
+- **Not hosted by default:** the app runs locally; see [Deployment](#deployment-optional) to put it
+  online so a reviewer can open a URL and log in without running anything.
 - No password reset / change-password flow (out of scope for this assignment).
 - QR scanning opens a **verification page only** — attendance recording is intentionally out of scope.
 - Tokens last 1 day; refresh-token rotation is not implemented.

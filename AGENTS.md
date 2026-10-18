@@ -45,7 +45,7 @@ npm.cmd run dev -- --host
 
 | Role    | Email               | Password    |
 | ------- | ------------------- | ----------- |
-| Admin   | `admin@cdc.ac.in`   | *(set via `SEED_ADMIN_PASSWORD`)* |
+| Admin   | `admin@cdc.ac.in`   | `Admin@123` (default; override with `SEED_ADMIN_PASSWORD`) |
 | Faculty | `priya@cdc.ac.in`   | `Fac@123`   |
 | Student | `rahul@cdc.ac.in`   | `Stu@123`   |
 
