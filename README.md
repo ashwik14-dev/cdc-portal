@@ -76,8 +76,14 @@ npm install
 npm run dev         # UI on http://localhost:5173
 ```
 
-Then open **http://localhost:5173** and log in with the printed credentials
+Then open `http://localhost:5173` and log in with the printed credentials
 (`admin@cdc.ac.in` / `Admin@123` by default — see [Demo Credentials](#demo-credentials)).
+
+> **Heads-up if you are sending this project to someone else:** `http://localhost:5173` means
+> "this computer" — it only works on a machine that is actually running the project. Sending that
+> link to someone in another place shows a "site can't be reached" error, or their own project if
+> something else happens to use port 5173. Send them this repository instead (they run
+> `START.bat`), or host it online as described under [Deployment](#deployment-optional).
 
 ### Even easier on Windows
 
@@ -85,6 +91,16 @@ Install **Node.js** and **MongoDB Community Server** once, download this project
 `START.bat`**. It creates `server/.env`, installs the packages, creates the accounts, starts both
 apps and opens the browser — nothing else to type. If Node.js is missing or MongoDB is not running it
 stops and tells you exactly what to install.
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| `localhost:5173` says "This site can't be reached" | Nothing is running on *that* computer | Install Node.js + MongoDB, then double-click `START.bat` |
+| The page loads but **Sign in** shows a network/request error | The API on port `5000` is not running | Start it too (`npm run dev` inside `server/`), or use `START.bat`, which starts both |
+| "Invalid email or password" right after setup | The database was never seeded | Run `npm run seed` inside `server/` |
+| `START.bat` says ports 5000/5173 are busy | The app is already running | Just open `http://localhost:5173` |
+| Windows asks about a firewall on first run | Node.js wants to listen for connections | Click **Allow** |
 
 ### 1. Prerequisites
 
@@ -113,7 +129,7 @@ npm install
 npm run dev
 ```
 
-Open **http://localhost:5173** and log in.
+Open `http://localhost:5173` and log in.
 
 ### 4. Scanning the student QR (optional)
 
@@ -126,7 +142,7 @@ http://<host>:5173/verify/<studentQrId>
 To scan it with a **phone**, the phone must be able to reach the dev server over your local network:
 
 1. Find your computer's LAN IP (e.g. `192.168.1.5`): `ipconfig` on Windows.
-2. Open the app on the computer using that IP: **http://192.168.1.5:5173** (not `localhost`).
+2. Open the app on the computer using that IP: `http://192.168.1.5:5173` (not `localhost`).
 3. The QR now encodes `http://192.168.1.5:5173/verify/<id>`. Log in as a student and scan it with
    the phone camera — the phone opens the verification page.
 

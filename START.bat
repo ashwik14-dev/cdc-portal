@@ -60,7 +60,7 @@ start "CDC Client" cmd /k "cd /d "%~dp0client" && npm run dev"
 
 echo.
 echo Waiting for the servers to start...
-timeout /t 7 /nobreak >nul
+ping -n 8 127.0.0.1 >nul
 
 set "LANIP="
 for /f "usebackq delims=" %%a in (`powershell -NoProfile -Command "$ips=@(Get-NetIPAddress -AddressFamily IPv4).Where({$_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*'}); $ips[0].IPAddress"`) do set "LANIP=%%a"
