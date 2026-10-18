@@ -52,6 +52,33 @@ cdc-portal/
 
 ## Setup Instructions
 
+> **This repository contains source code only — no database is included.** All accounts
+> (admin, faculty, students) live in whatever MongoDB you connect to. `http://localhost:5173`
+> therefore refers to the machine that is *running* the app: opening it in a browser reaches
+> your own computer, so a shared link only works after someone runs these steps on their
+> machine (or you deploy the app — see [Known Limitations](#known-limitations)).
+
+### 0. Quick start (copy-paste)
+
+Run these in order; the app is ready when both terminals are running.
+
+```bash
+# Terminal 1 - API + database
+cd server
+npm install
+copy .env.example .env
+npm run seed        # creates admin + demo faculty/student and prints the credentials
+npm run dev         # API on http://localhost:5000
+
+# Terminal 2 - React app
+cd client
+npm install
+npm run dev         # UI on http://localhost:5173
+```
+
+Then open **http://localhost:5173** and log in with the printed credentials
+(`admin@cdc.ac.in` / `Admin@123` by default — see [Demo Credentials](#demo-credentials)).
+
 ### 1. Prerequisites
 
 - Node.js 18+
@@ -126,9 +153,11 @@ cd server
 npm run seed
 ```
 
-The admin email defaults to `admin@cdc.ac.in`. The initial password defaults to the value defined in
-`server/scripts/seedAdmin.js` — set `SEED_ADMIN_PASSWORD` (and optionally `SEED_ADMIN_EMAIL`) in
-`server/.env` before seeding to choose your own. The script prints the account it creates.
+The admin email defaults to `admin@cdc.ac.in` and the initial password to `Admin@123`; override them
+with `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` in `server/.env` before seeding. The script prints
+every account it creates and **never overwrites an existing user**. By default it also seeds the
+demo faculty and student accounts listed under [Demo Credentials](#demo-credentials) so the whole
+flow can be exercised immediately; set `SEED_DEMO_ACCOUNTS=false` to seed only the admin.
 
 ---
 
@@ -210,6 +239,8 @@ locally before submission.
 
 ## Known Limitations
 
+- **Not deployed:** there is no hosted URL — the app runs locally (or deploy the client to
+  Vercel/Netlify, the API to Render/Railway, and point `MONGO_URI` at MongoDB Atlas).
 - No password reset / change-password flow (out of scope for this assignment).
 - QR scanning opens a **verification page only** — attendance recording is intentionally out of scope.
 - Tokens last 1 day; refresh-token rotation is not implemented.
@@ -218,10 +249,18 @@ locally before submission.
 
 ## Demo Credentials
 
+Created by `npm run seed` (see [Admin Seed](#admin-seed)):
+
 | Role    | Email               | Password   |
 | ------- | ------------------- | ---------- |
-| Admin   | `admin@cdc.ac.in`   | *(set via `SEED_ADMIN_PASSWORD`)* |
+| Admin   | `admin@cdc.ac.in`   | `Admin@123` |
 | Faculty | `priya@cdc.ac.in`   | `Fac@123`   |
 | Student | `rahul@cdc.ac.in`   | `Stu@123`   |
 
-> Demo credentials are for local evaluation only. Replace all secrets before any real deployment.
+The seeded Student has roll number `22B91A0501` (CSE) and a unique `studentQrId`; the QR verification
+page is public and needs no login.
+
+> These are local evaluation credentials only — the admin password is overridable via
+> `SEED_ADMIN_PASSWORD`. Faculty/Student accounts you create through the Admin dashboard are stored
+> in your own MongoDB and are **not** part of this repository. Replace all secrets before any real
+> deployment.
