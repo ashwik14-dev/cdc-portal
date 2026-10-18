@@ -108,13 +108,12 @@ pause
 exit /b 1
 
 :already_running
-echo [X]   The app already looks like it is running ^(ports 5000/5173 are busy^).
 echo.
-echo       Close the windows named "CDC Server" and "CDC Client",
-echo       or just open http://localhost:5173 in your browser.
+echo  The app is already running, so starting it again is not needed.
+echo  Opening it in your browser now...
 echo.
-pause
-exit /b 1
+start "" http://localhost:5173
+exit /b 0
 
 :no_mongo
 echo.
